@@ -1,16 +1,17 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
 # Load .env
 load_dotenv()
 
-# Correct API key loading
 api_key = os.getenv("GEMINI_API_KEY")
 
-# Create Gemini client
-client = genai.Client(api_key=api_key)
+# Configure Gemini
+genai.configure(api_key=api_key)
+
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 st.title("🎓 Career Advisor Chatbot")
 
@@ -33,10 +34,7 @@ if prompt:
     try:
         with st.spinner("Thinking..."):
 
-            response = client.models.generate_content(
-                model="gemini-1.5-flash",
-                contents=prompt
-            )
+            response = model.generate_content(prompt)
 
             reply = response.text
 
